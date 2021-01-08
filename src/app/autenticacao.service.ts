@@ -21,7 +21,7 @@ const httpOptions2 = {
   providedIn: 'root'
 })
 export class AutenticacaoService {
-  private baseUrl = 'http://localhost:8000/rest/';
+  private baseUrl = 'http://rafaelfbaptista.pythonanywhere.com/rest/';
 
   constructor(private http: HttpClient) {}
 

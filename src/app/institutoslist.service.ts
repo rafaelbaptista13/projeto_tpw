@@ -12,7 +12,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class InstitutoslistService {
-  private baseUrl = 'http://localhost:8000/rest/';
+  private baseUrl = 'http://rafaelfbaptista.pythonanywhere.com/rest/';
   constructor(private http: HttpClient) { }
 
   getListaInstitutos(nomePesquisado: string, localizacaoPesquisada: string): Observable<Instituto[]> {

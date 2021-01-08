@@ -13,7 +13,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class CategoriasService {
-  private baseUrl = 'http://localhost:8000/rest/';
+  private baseUrl = 'http://rafaelfbaptista.pythonanywhere.com/rest/';
   constructor(private http: HttpClient) { }
 
   getCategoriaProdutoById(id: number){
