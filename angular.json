@@ -120,5 +120,8 @@
       }
     }
   },
-  "defaultProject": "angularWebSite"
+  "defaultProject": "angularWebSite",
+  "cli": {
+    "analytics": "9fe75974-f466-4251-9618-918d86710991"
+  }
 }
