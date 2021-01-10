@@ -17,6 +17,7 @@ export class GestaoservicosComponent implements OnInit {
   userLogado: boolean;
   servicosList: Servico[] = [];
 
+
   constructor(private router: Router, private servicoslistService: ServicoslistService, private autenticacaoService: AutenticacaoService) {
     this.error = false;
     this.page_obj = true;
@@ -31,7 +32,7 @@ export class GestaoservicosComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -43,21 +44,8 @@ export class GestaoservicosComponent implements OnInit {
       this.router.navigate(['/home']);
     }
     this.servicosList = [];
-    this.servicoslistService.getListaServicos('',-1, -1, '', '' ).subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId) {
-          this.servicosList.push(element);
-        }
-      });
-    },
-      error => {
-        if (error.status === 401) {
-          this.autenticacaoService.renovateSession().subscribe(
-            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-            erro => this.router.navigateByUrl('/login'));
-        }
-      });
+
+    this.getServicos('http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
   }
 
 
@@ -71,6 +59,31 @@ export class GestaoservicosComponent implements OnInit {
         }
       });
   }
+
+
+  getServicos(url) {
+
+    this.servicoslistService.getListaServicos(url).subscribe(response2 => {
+        response2.results.forEach((element) => {
+          //@ts-ignore
+          if (element.dono === this.userId) {
+            this.servicosList.push(element);
+          }
+        });
+
+
+      },
+      error => {
+        if (error.status === 401) {
+          this.autenticacaoService.renovateSession().subscribe(
+            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+            erro => this.router.navigateByUrl('/login'));
+        }
+      });
+  }
+
+
+
 
   logout() {
     this.autenticacaoService.logout();

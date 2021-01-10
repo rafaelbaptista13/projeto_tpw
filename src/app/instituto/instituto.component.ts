@@ -39,18 +39,19 @@ export class InstitutoComponent implements OnInit {
             erro => this.router.navigateByUrl('/login'));
         }
       });
-    this.servicoslistService.getListaServicos('', this.institutoID, -1, '', '' ).subscribe(lista => { this.servicosList = lista;
-      this.servicosList.forEach( (element) => {
-        // @ts-ignore
-        this.categoriasService.getCategoriaServicoById(element.categoria).subscribe(categoria => {element.categoria = categoria;},
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
-          });
-      });},
+    let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
+    this.servicoslistService.getListaServicos(url).subscribe(lista => { this.servicosList = lista.results;
+        this.servicosList.forEach( (element) => {
+          // @ts-ignore
+          this.categoriasService.getCategoriaServicoById(element.categoria).subscribe(categoria => {element.categoria = categoria;},
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            });
+        });},
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -58,19 +59,20 @@ export class InstitutoComponent implements OnInit {
             erro => this.router.navigateByUrl('/login'));
         }
       });
-    this.produtoslistService.getListaProdutos('', this.institutoID , -1 ,'', '').subscribe(lista => {this.produtosList = lista;
-      this.produtosList.forEach( (element) => {
-        // @ts-ignore
-        this.categoriasService.getCategoriaProdutoById(element.categoria).subscribe(categoria => { element.categoria = categoria;},
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
-          });
-      });
-    },
+    url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
+    this.produtoslistService.getListaProdutos(url).subscribe(lista => {this.produtosList = lista;
+        this.produtosList.forEach( (element) => {
+          // @ts-ignore
+          this.categoriasService.getCategoriaProdutoById(element.categoria).subscribe(categoria => { element.categoria = categoria;},
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            });
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -79,18 +81,18 @@ export class InstitutoComponent implements OnInit {
         }
       });
     this.staffService.getListaStaffByInstitutoID(this.institutoID).subscribe(result => { this.membrosList = result;
-      this.membrosList.forEach( (element) => {
-        //@ts-ignore
-        this.staffService.getListaTrabalhos(this.institutoID, element.id).subscribe(result => {this.staffDict[element.id] = element; this.trabalhosDict[element.id] = result;},
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
-          })
-      });
-    },
+        this.membrosList.forEach( (element) => {
+          //@ts-ignore
+          this.staffService.getListaTrabalhos(this.institutoID, element.id).subscribe(result => {this.staffDict[element.id] = element; this.trabalhosDict[element.id] = result;},
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            })
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -110,7 +112,7 @@ export class InstitutoComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

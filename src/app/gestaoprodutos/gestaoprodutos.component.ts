@@ -34,7 +34,7 @@ export class GestaoprodutosComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -46,14 +46,23 @@ export class GestaoprodutosComponent implements OnInit {
       this.router.navigate(['/home']);
     }
     this.produtosList = [];
-    this.produtoslistService.getListaProdutos('',-1, -1, '', '' ).subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId) {
-          this.produtosList.push(element);
-        }
-      });
-    },
+    this.getProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+
+  }
+
+
+
+  getProdutos(url) {
+
+    this.produtoslistService.getListaProdutos(url).subscribe(response2 => {
+        response2.results.forEach((element) => {
+          //@ts-ignore
+          if (element.dono === this.userId) {
+            this.produtosList.push(element);
+          }
+        });
+
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -62,7 +71,6 @@ export class GestaoprodutosComponent implements OnInit {
         }
       });
   }
-
 
   remover(produto: Produto): void {
     this.produtoslistService.dropProduto(produto.id).subscribe(result => {this.ngOnInit();},

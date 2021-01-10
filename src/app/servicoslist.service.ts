@@ -18,34 +18,9 @@ export class ServicoslistService {
 
   constructor(private http: HttpClient) { }
 
-  getListaServicos(nomePesquisado: string, institutoPesquisado: number, categoriaPesquisada: number, minpricePesquisado: string, maxpricePesquisado: string): Observable<Servico[]> {
-    let url = this.baseUrl + 'listaServicos?';
-    if (nomePesquisado === undefined ) {
-      nomePesquisado = '';
-    }
-    url += '&nome=' + nomePesquisado;
+  getListaServicos(url: string): Observable<any> {
 
-    if (institutoPesquisado === undefined) {
-      institutoPesquisado = -1;
-    }
-    url += '&instituto=' + institutoPesquisado;
-
-    if (categoriaPesquisada === undefined) {
-      categoriaPesquisada = -1;
-    }
-    url += '&categoria=' + categoriaPesquisada;
-
-    if (minpricePesquisado === undefined) {
-      minpricePesquisado = '';
-    }
-    url += '&minprice=' + minpricePesquisado;
-
-    if (maxpricePesquisado === undefined) {
-      maxpricePesquisado = '';
-    }
-    url += '&maxprice=' + maxpricePesquisado;
-
-    return this.http.get<Servico[]>(url);
+    return this.http.get<any>(url);
   }
 
 

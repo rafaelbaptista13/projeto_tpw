@@ -24,6 +24,8 @@ export class ServicoslistComponent implements OnInit {
   servicosList: Servico[];
   institutos: Instituto[];
   categorias: CategoriaServico[];
+  next: string;
+  previous: string;
 
   formGroup: FormGroup;
   formReady: boolean;
@@ -44,7 +46,7 @@ export class ServicoslistComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -55,9 +57,8 @@ export class ServicoslistComponent implements OnInit {
     }
     this.initForm();
     this.institutolistService.getListaInstitutos('','' ).subscribe(lista => { this.institutos = lista;
-      this.categoriasService.getListaCategoriasServicos().subscribe(lista1 => {this.categorias = lista1;
-        this.servicoslistService.getListaServicos('',-1, -1, '', '' ).subscribe(lista2 => {this.servicosList = lista2;
-        },
+        this.categoriasService.getListaCategoriasServicos().subscribe(lista1 => {this.categorias = lista1; this.getServicos('http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+          },
           error => {
             if (error.status === 401) {
               this.autenticacaoService.renovateSession().subscribe(
@@ -66,14 +67,6 @@ export class ServicoslistComponent implements OnInit {
             }
           });
       },
-        error => {
-          if (error.status === 401) {
-            this.autenticacaoService.renovateSession().subscribe(
-              token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-              erro => this.router.navigateByUrl('/login'));
-          }
-        });
-    },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -82,6 +75,28 @@ export class ServicoslistComponent implements OnInit {
         }
       });
   }
+
+
+  getServicos(url) {
+
+    this.servicoslistService.getListaServicos(url).subscribe(response2 => {
+        this.servicosList = response2.results;
+        // set the components next property here from the response
+        this.next = response2.links.next;
+
+        // set the components next property here from the response
+        this.previous = response2.links.previous;
+
+      },
+      error => {
+        if (error.status === 401) {
+          this.autenticacaoService.renovateSession().subscribe(
+            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+            erro => this.router.navigateByUrl('/login'));
+        }
+      });
+  }
+
 
   initForm() {
     this.formGroup = new FormGroup({
@@ -95,22 +110,51 @@ export class ServicoslistComponent implements OnInit {
   }
 
   pesquisa(): void {
-    let instituto = this.formGroup.controls.instituto.value;
-    let categoria = this.formGroup.controls.categoria.value;
+    let instituto: any = this.formGroup.controls.instituto.value;
+    let categoria: any = this.formGroup.controls.categoria.value;
     if (instituto === '') {
-      instituto = undefined;
+      instituto = -1;
     }
+    let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?';
+
+    url += '&instituto=' + instituto;
+
     if (categoria === '') {
-      categoria = undefined;
+      categoria = -1;
     }
-    this.servicoslistService.getListaServicos(this.formGroup.controls.nome.value, instituto, categoria, this.formGroup.controls.precomin.value, this.formGroup.controls.precomax.value).subscribe(lista => { this.servicosList = lista; this.initForm();},
-      error => {
-        if (error.status === 401) {
-          this.autenticacaoService.renovateSession().subscribe(
-            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-            erro => this.router.navigateByUrl('/login'));
-        }
-      });
+    url += '&categoria=' + categoria;
+
+
+    if (this.formGroup.controls.nome.value === undefined || this.formGroup.controls.nome.value === null) {
+      url += '&nome=';
+    } else {
+      url += '&nome=' + this.formGroup.controls.nome.value;
+    }
+
+
+    if (this.formGroup.controls.precomin.value === undefined || this.formGroup.controls.precomin.value === null) {
+      url += '&minprice=';
+    } else {
+      url += '&minprice=' + this.formGroup.controls.precomin.value;
+    }
+
+    if (this.formGroup.controls.precomax.value === undefined || this.formGroup.controls.precomax.value === null) {
+      url += '&maxprice=';
+    } else {
+      url += '&maxprice=' + this.formGroup.controls.precomax.value;
+    }
+
+    url += '&page=1&page_size=8';
+    this.getServicos(url);
+  }
+
+  fetchNext() {
+    this.getServicos(this.next);
+  }
+
+  // function fetches the previous paginated items by using the url in the previous property
+  fetchPrevious() {
+    this.getServicos(this.previous);
   }
 
   goToServico( servico: Servico) {
