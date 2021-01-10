@@ -60,7 +60,7 @@ export class InstitutoComponent implements OnInit {
         }
       });
     url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
-    this.produtoslistService.getListaProdutos(url).subscribe(lista => {this.produtosList = lista;
+    this.produtoslistService.getListaProdutos(url).subscribe(lista => {this.produtosList = lista.results;
         this.produtosList.forEach( (element) => {
           // @ts-ignore
           this.categoriasService.getCategoriaProdutoById(element.categoria).subscribe(categoria => { element.categoria = categoria;},
