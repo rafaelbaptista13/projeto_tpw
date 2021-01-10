@@ -75,7 +75,7 @@
       <ul class="list-group list-group-flush">
         <div *ngFor="let instituto of institutosList" class="institutolist-item">
           <li  class="list-group-item" style="margin-bottom: 20px">
-            <img style="height: 100px; float: left; margin-right: 30px; padding-bottom: 20px;" src="assets/{{ instituto.foto }}"  [routerLink]= "['/instituto', instituto.id]">
+            <img style="height: 100px; float: left; margin-right: 30px; padding-bottom: 20px;" src="assets{{ instituto.foto }}"  [routerLink]= "['/instituto', instituto.id]">
             <a style="font-size: 20px" [routerLink]= "['/instituto', instituto.id]">{{ instituto.nome }}</a>
             <ul class="ul-Azul" style="line-height: 180%">
               <li style="display: inline-block; max-width: 900px">{{ instituto.slogan }}</li>

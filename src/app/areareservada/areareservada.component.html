@@ -70,7 +70,7 @@
   <ul style="width: 80%; margin: auto" class="list-group list-group-flush">
     <li *ngFor="let categoria of categoriasServicos" class="list-group-item" style="margin-bottom: 20px">
       <div class="row">
-        <img style="height: 30px; margin-left: 40px; margin-right: 80px" src="assets/{{ categoria.foto }}">
+        <img style="height: 30px; margin-left: 40px; margin-right: 80px" src="assets{{ categoria.foto }}">
         <div class="col-md-3 col-xs-6 divTableCell">
           <p style="font-size: 16px" >{{ categoria.nome }}</p>
         </div>
@@ -122,7 +122,7 @@
   <ul style="width: 80%; margin: auto" class="list-group list-group-flush">
     <li *ngFor="let categoria of categoriasProdutos" class="list-group-item" style="margin-bottom: 20px">
       <div class="row">
-        <img style="height: 30px; margin-left: 40px; margin-right: 80px" src="assets/{{ categoria.foto }}">
+        <img style="height: 30px; margin-left: 40px; margin-right: 80px" src="assets{{ categoria.foto }}">
         <div class="col-md-3 col-xs-6 divTableCell">
           <p style="font-size: 16px" >{{ categoria.nome }}</p>
         </div>
