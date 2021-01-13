@@ -28,6 +28,7 @@ export class EditarservicoComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
 
   constructor(private route: ActivatedRoute, private router: Router, private categoriasService: CategoriasService, private autenticacaoService: AutenticacaoService, private servicoslistService: ServicoslistService, private institutoslistService: InstitutoslistService) {
     this.error = false;
@@ -43,7 +44,7 @@ export class EditarservicoComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -56,12 +57,12 @@ export class EditarservicoComponent implements OnInit {
     }
     this.servicoID = parseInt(this.route.snapshot.paramMap.get('id'));
     this.servicoslistService.getServicoById(this.servicoID).subscribe(result => {this.servico = result;
-      //@ts-ignore
-      this.selectedCategoria = this.servico.categoria;
-      //@ts-ignore
-      this.selectedInstitutos = this.servico.instituto;
-      this.initForm();
-    },
+        //@ts-ignore
+        this.selectedCategoria = this.servico.categoria;
+        //@ts-ignore
+        this.selectedInstitutos = this.servico.instituto;
+        this.initForm();
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -82,13 +83,13 @@ export class EditarservicoComponent implements OnInit {
       });
     this.institutos = [];
     this.institutoslistService.getListaInstitutos('','').subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId) {
-          this.institutos.push(element);
-        }
-      });
-    },
+        lista.forEach((element) => {
+          //@ts-ignore
+          if (element.dono === this.userId) {
+            this.institutos.push(element);
+          }
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -102,21 +103,33 @@ export class EditarservicoComponent implements OnInit {
       preco: new FormControl(this.servico.preco, [Validators.required]),
       categoria: new FormControl('', [Validators.required]),
       instituto: new FormControl('', [Validators.required]),
-      foto: new FormControl(this.servico.foto, [Validators.required]),
+      //foto: new FormControl(this.servico.foto, [Validators.required]),
     });
     this.formReady = true;
+  }
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
   }
 
   editarProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      this.servico.nome = this.formGroup.controls.nome.value;
-      this.servico.descricao = this.formGroup.controls.descricao.value;
-      this.servico.preco = this.formGroup.controls.preco.value;
-      this.servico.categoria = this.formGroup.controls.categoria.value;
-      this.servico.instituto =  this.formGroup.controls.instituto.value;
-      this.servico.foto =  this.formGroup.controls.foto.value;
-      this.servicoslistService.updateServico(this.servico).subscribe(result => {this.router.navigate(['/gerirservicos']);},
+      let institutos: string = '';
+      this.selectedInstitutos.forEach((elemento) => {
+        institutos = institutos + elemento + '-';
+      });
+      institutos = institutos.substring(0, institutos.length - 1);
+
+      const uploadServico: FormData = new FormData();
+      uploadServico.append('id', String(this.servico.id));
+      uploadServico.append('nome', this.formGroup.controls.nome.value);
+      uploadServico.append('descricao', this.formGroup.controls.descricao.value);
+      uploadServico.append('preco', this.formGroup.controls.preco.value);
+      uploadServico.append('institutos', institutos);
+      uploadServico.append('foto', this.foto, this.foto.name);
+      uploadServico.append('categoria', String(this.formGroup.controls.categoria.value));
+      this.servicoslistService.updateServico(uploadServico).subscribe(result => {this.router.navigate(['/gerirservicos']);},
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

@@ -49,14 +49,14 @@ export class StafflistService {
     return this.http.get<Trabalho[]>(url);
   }
 
-  createMembroStaff(membroStaff: MembroStaff): Observable<any> {
+  createMembroStaff(membroStaff: any): Observable<any> {
     let url = this.baseUrl + 'createStaff';
-    return this.http.post(url, membroStaff, httpOptions);
+    return this.http.post(url, membroStaff);
   }
 
-  updateStaff(membroStaff: MembroStaff): Observable<any> {
+  updateStaff(membroStaff: any): Observable<any> {
     let url = this.baseUrl + 'updateStaff';
-    return this.http.put(url, membroStaff, httpOptions);
+    return this.http.put(url, membroStaff);
   }
 
   dropMembroStaff(id: number) {

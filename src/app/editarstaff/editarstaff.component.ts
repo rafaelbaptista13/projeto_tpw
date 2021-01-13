@@ -27,11 +27,12 @@ export class EditarstaffComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
 
   constructor(private route: ActivatedRoute, private router: Router, private autenticacaoService: AutenticacaoService,  private institutoslistService: InstitutoslistService, private stafflistService: StafflistService) {
-  this.error = false;
-  this.formReady = false;
-}
+    this.error = false;
+    this.formReady = false;
+  }
 
   ngOnInit(): void {
     if (localStorage.getItem('currentUserUsername') != null) {
@@ -42,7 +43,7 @@ export class EditarstaffComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -56,10 +57,10 @@ export class EditarstaffComponent implements OnInit {
     this.membrostaffID = parseInt(this.route.snapshot.paramMap.get('id'));
 
     this.stafflistService.getStaffMemberById(this.membrostaffID).subscribe(result => {this.membrostaff = result;
-      //@ts-ignore
-      this.selectedTrabalhos = this.membrostaff.trabalhos;
-      this.initForm();
-    },
+        //@ts-ignore
+        this.selectedTrabalhos = this.membrostaff.trabalhos;
+        this.initForm();
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -72,20 +73,20 @@ export class EditarstaffComponent implements OnInit {
   initForm() {
     this.trabalhos = [];
     this.stafflistService.getListaTrabalhosByDono(this.userId).subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        this.institutoslistService.getInstitutoById(element.instituto).subscribe(result => {
-          this.trabalhos.push([element, result.nome]);
-        },
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
-          });
-      });
-    },
+        lista.forEach((element) => {
+          //@ts-ignore
+          this.institutoslistService.getInstitutoById(element.instituto).subscribe(result => {
+              this.trabalhos.push([element, result.nome]);
+            },
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            });
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -96,19 +97,29 @@ export class EditarstaffComponent implements OnInit {
     this.formGroup = new FormGroup({
       nome: new FormControl(this.membrostaff.nome, [Validators.required]),
       trabalho: new FormControl('', [Validators.required]),
-      foto: new FormControl(this.membrostaff.foto, [Validators.required]),
     });
     this.formReady = true;
+  }
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
   }
 
   editarProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      this.membrostaff.nome = this.formGroup.controls.nome.value;
-      this.membrostaff.trabalhos =  this.formGroup.controls.trabalho.value;
-      this.membrostaff.foto =  this.formGroup.controls.foto.value;
-      console.log(this.membrostaff)
-      this.stafflistService.updateStaff(this.membrostaff).subscribe(result => {this.router.navigate(['/gerirstaff']);},
+      let trabalhos: string = '';
+      this.selectedTrabalhos.forEach((elemento) => {
+        trabalhos = trabalhos + elemento + '-';
+      });
+      trabalhos = trabalhos.substring(0, trabalhos.length - 1);
+      const uploadMembro: FormData = new FormData();
+      uploadMembro.append('id', String(this.membrostaff.id));
+      uploadMembro.append('nome', this.formGroup.controls.nome.value);
+      uploadMembro.append('foto', this.foto, this.foto.name);
+      uploadMembro.append('trabalhos', trabalhos);
+
+      this.stafflistService.updateStaff(uploadMembro).subscribe(result => {this.router.navigate(['/gerirstaff']);},
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

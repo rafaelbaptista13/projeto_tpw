@@ -22,6 +22,8 @@ export class AreareservadaComponent implements OnInit {
   categoriasProdutos: CategoriaProduto[];
   categoriasServicos: CategoriaServico[];
 
+  foto1: File;
+  foto2: File;
   formGroup1: FormGroup;
   formGroup2: FormGroup;
   formReady1: boolean;
@@ -41,7 +43,7 @@ export class AreareservadaComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -75,14 +77,20 @@ export class AreareservadaComponent implements OnInit {
   initForms(): void {
     this.formGroup1 = new FormGroup({
       nome: new FormControl('', [Validators.required]),
-      foto: new FormControl('', [Validators.required]),
     });
     this.formGroup2 = new FormGroup({
       nome: new FormControl('', [Validators.required]),
-      foto: new FormControl('', [Validators.required]),
     });
     this.formReady1 = true;
     this.formReady2 = true;
+  }
+
+  onSelectedFile1(event) {
+    this.foto1 = event.target.files[0];
+  }
+
+  onSelectedFile2(event) {
+    this.foto2 = event.target.files[0];
   }
 
   logout() {
@@ -94,29 +102,42 @@ export class AreareservadaComponent implements OnInit {
   }
 
   inserir1(): void {
-    const fotopath = 'static/images/categoriasServicos/' + this.formGroup1.controls.foto.value.substring(12, this.formGroup1.controls.foto.value.length);
-    const novacategoria = new CategoriaServico(this.formGroup1.controls.nome.value, fotopath);
-    this.categoriasService.createCategoriaServico(novacategoria).subscribe(result => { this.ngOnInit();},
-      error => {
-        if (error.status === 401) {
-          this.autenticacaoService.renovateSession().subscribe(
-            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-            erro => this.router.navigateByUrl('/login'));
-        }
-      });
+    console.log('aqui')
+    if (this.formGroup1.valid && this.foto1 !== undefined) {
+      console.log('entrei')
+      const uploadCategoria: FormData = new FormData();
+      uploadCategoria.append('nome', this.formGroup1.controls.nome.value);
+      uploadCategoria.append('foto', this.foto1, this.foto1.name);
+      this.categoriasService.createCategoriaServico(uploadCategoria).subscribe(result => {
+          this.ngOnInit();
+        },
+        error => {
+          if (error.status === 401) {
+            this.autenticacaoService.renovateSession().subscribe(
+              token => {
+                localStorage.setItem('currentUserTokenAccess', token.access);
+                this.ngOnInit()
+              },
+              erro => this.router.navigateByUrl('/login'));
+          }
+        });
+    }
   }
 
   inserir2(): void {
-    const fotopath = 'static/images/categoriasProdutos/' + this.formGroup2.controls.foto.value.substring(12, this.formGroup2.controls.foto.value.length);
-    const novacategoria = new CategoriaProduto(this.formGroup2.controls.nome.value, fotopath);
-    this.categoriasService.createCategoriaProduto(novacategoria).subscribe(result => {this.ngOnInit();},
-      error => {
-        if (error.status === 401) {
-          this.autenticacaoService.renovateSession().subscribe(
-            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-            erro => this.router.navigateByUrl('/login'));
-        }
-      });
+    if (this.formGroup2.valid && this.foto2 !== undefined) {
+      const uploadCategoria: FormData = new FormData();
+      uploadCategoria.append('nome', this.formGroup2.controls.nome.value);
+      uploadCategoria.append('foto', this.foto2, this.foto1.name);
+      this.categoriasService.createCategoriaProduto(uploadCategoria).subscribe(result => {this.ngOnInit();},
+        error => {
+          if (error.status === 401) {
+            this.autenticacaoService.renovateSession().subscribe(
+              token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+              erro => this.router.navigateByUrl('/login'));
+          }
+        });
+    }
   }
 
   remover(categoria: CategoriaServico): void {

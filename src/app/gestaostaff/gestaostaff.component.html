@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light " style="background: whitesmoke">
-  <a routerLink="/home"><img style="height: 80px; width: 133px; margin-right: 20px" src="assets/static/images/logo2.png"></a>
+  <a routerLink="/home"><img style="height: 80px; width: 133px; margin-right: 20px" src="http://rafaelfbaptista.pythonanywhere.com/static/images/logo2.png"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -43,7 +43,7 @@
     <ng-template #thenBlock2>
       <ul class="nav navbar-nav navbar-right" >
         <li style="text-align: right;"><a routerLink="/account">
-          <img src="assets/static/images/user.png" style="width: 5%">
+          <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/user.png" style="width: 5%">
           <span class="glyphicon glyphicon-log-in">&nbsp;</span>
           {{ userName }}
           <span class="glyphicon glyphicon-log-in">&nbsp; &nbsp;</span>
@@ -74,15 +74,15 @@
 
     <div *ngFor="let trabalhador of trabalhadorList"  class="card-zoom card-deck" style="width: 372.59px; display: inline-block; margin: 30px 20px">
       <div class="card">
-        <img class="card-img-top" src="assets{{ trabalhador.foto }}" alt="Card image cap" style="width: 340.59px; height: 320.59px;">
+        <img class="card-img-top" src="http://rafaelfbaptista.pythonanywhere.com{{ trabalhador.foto }}" alt="Card image cap" style="width: 340.59px; height: 320.59px;">
         <!--<div class="card-body" style="width: 340.59px;">
           <h5 class="card-title" style="width: 300.59px; height: 30.59px;">{{ trabalhador.nome }}</h5>
         </div>-->
         <div class="card-footer" style="width: 340.59px;">
           <small class="text-muted" style="width: 280.59px; height: 50.59px; font-size: 16px;">
-            <img src="assets/static/images/editicon.png" style="width: 25px; position: absolute; left: 60px;" [routerLink]= "['/editarstaff', trabalhador.id]">
+            <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; left: 60px;" [routerLink]= "['/editarstaff', trabalhador.id]">
               {{ trabalhador.nome }}
-            <img src="assets/static/images/deleteicon.png" style="width: 25px; position: absolute; right: 60px;" (click)="remover(trabalhador)">
+            <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; position: absolute; right: 60px;" (click)="remover(trabalhador)">
           </small>
         </div>
       </div>

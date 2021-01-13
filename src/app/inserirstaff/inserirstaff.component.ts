@@ -20,6 +20,7 @@ export class InserirstaffComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
   trabalhos = [];
   institutos: Instituto[] = [];
 
@@ -37,7 +38,7 @@ export class InserirstaffComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -61,15 +62,15 @@ export class InserirstaffComponent implements OnInit {
   initForm() {
     this.trabalhos = [];
     this.stafflistService.getListaTrabalhosByDono(this.userId).subscribe(lista => {
-      lista.forEach((element) => {
-        this.institutos.forEach((element2) => {
-          //@ts-ignore
-          if (element.instituto === element2.id) {
-            this.trabalhos.push([element, element2.nome]);
-          }
+        lista.forEach((element) => {
+          this.institutos.forEach((element2) => {
+            //@ts-ignore
+            if (element.instituto === element2.id) {
+              this.trabalhos.push([element, element2.nome]);
+            }
+          });
         });
-      });
-    },
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -80,33 +81,44 @@ export class InserirstaffComponent implements OnInit {
     this.formGroup = new FormGroup({
       nome: new FormControl('', [Validators.required]),
       trabalhos: new FormControl('', [Validators.required]),
-      foto: new FormControl('', [Validators.required]),
     });
     this.formReady = true;
   }
 
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
+  }
+
+
   inserirProcess() {
     this.error = false;
-    if (this.formGroup.valid) {
-      const fotopath = this.formGroup.controls.foto.value.substring(12, this.formGroup.controls.foto.value.length);
+    if (this.formGroup.valid && this.foto !== undefined) {
       this.autenticacaoService.getUser(this.userName).subscribe(dono => {
-        const novoMembro = new MembroStaff(this.formGroup.controls.nome.value, fotopath, dono);
-        this.formGroup.controls.trabalhos.value.forEach((elemento) => {
-          novoMembro.addTrabalho(elemento);
-        });
-
-        this.stafflistService.createMembroStaff(novoMembro).subscribe(result => {
-          this.router.navigate(['/gerirstaff']);
-        },
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
+          let trabalhos : string = '';
+          this.formGroup.controls.trabalhos.value.forEach((elemento) => {
+            trabalhos = trabalhos + elemento.id + '-';
           });
+          trabalhos = trabalhos.substring(0, trabalhos.length - 1);
 
-      },
+          const uploadMembro: FormData = new FormData();
+          uploadMembro.append('nome', this.formGroup.controls.nome.value);
+          uploadMembro.append('foto', this.foto, this.foto.name);
+          uploadMembro.append('trabalhos', trabalhos);
+          uploadMembro.append('dono', String(dono.id));
+
+          this.stafflistService.createMembroStaff(uploadMembro).subscribe(result => {
+              this.router.navigate(['/gerirstaff']);
+            },
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            });
+
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

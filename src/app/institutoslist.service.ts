@@ -35,14 +35,14 @@ export class InstitutoslistService {
     return this.http.get<Instituto>(url)
   }
 
-  createInstituto(instituto: Instituto): Observable<any> {
+  createInstituto(instituto: any): Observable<any> {
     let url = this.baseUrl + 'createInstituto';
-    return this.http.post(url, instituto, httpOptions);
+    return this.http.post(url, instituto);
   }
 
-  updateInstituto(instituto: Instituto): Observable<any> {
+  updateInstituto(instituto: any): Observable<any> {
     let url = this.baseUrl + 'updateInstituto';
-    return this.http.put(url, instituto, httpOptions);
+    return this.http.put(url, instituto);
   }
 
   dropInstituto(id: number) {

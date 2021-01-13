@@ -22,6 +22,7 @@ export class InserirprodutoComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
   categorias: CategoriaProduto[];
   institutos: Instituto[] = [];
   constructor(private router: Router, private autenticacaoService: AutenticacaoService, private produtoslistService: ProdutoslistService, private categoriasService: CategoriasService, private institutoslistService: InstitutoslistService) {
@@ -38,7 +39,7 @@ export class InserirprodutoComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -63,13 +64,13 @@ export class InserirprodutoComponent implements OnInit {
       });
     this.institutos = [];
     this.institutoslistService.getListaInstitutos('','').subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId) {
-          this.institutos.push(element);
-        }
-      });
-    },
+        lista.forEach((element) => {
+          //@ts-ignore
+          if (element.dono === this.userId) {
+            this.institutos.push(element);
+          }
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -84,20 +85,25 @@ export class InserirprodutoComponent implements OnInit {
       quantidade: new FormControl('', [Validators.required]),
       categoria: new FormControl('', [Validators.required]),
       instituto: new FormControl('', [Validators.required]),
-      foto: new FormControl('', [Validators.required]),
+      //foto: new FormControl('', [Validators.required]),
     });
     this.formReady = true;
   }
 
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
+  }
+
+
   inserirProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      const fotopath = this.formGroup.controls.foto.value.substring(12, this.formGroup.controls.foto.value.length);
       let categoriaselecionada;
-      const institutosselecionados = [];
+      let institutosselecionados = '';
       this.formGroup.controls.instituto.value.forEach((elemento) => {
         this.institutoslistService.getInstitutoById(elemento).subscribe(result => {
-          institutosselecionados.push(result);},
+            institutosselecionados = institutosselecionados + result.id + '-';
+          },
           error => {
             if (error.status === 401) {
               this.autenticacaoService.renovateSession().subscribe(
@@ -107,13 +113,28 @@ export class InserirprodutoComponent implements OnInit {
           });
       });
       this.categoriasService.getCategoriaProdutoById(this.formGroup.controls.categoria.value).subscribe(result => {categoriaselecionada = result;
-        this.autenticacaoService.getUser(this.userName).subscribe(dono => {
-          const novoProduto = new Produto(this.formGroup.controls.nome.value, this.formGroup.controls.descricao.value, this.formGroup.controls.preco.value, this.formGroup.controls.quantidade.value, categoriaselecionada, fotopath, dono);institutosselecionados.forEach((elemento) => {
-            novoProduto.addInstituto(elemento);
-          });
-          this.produtoslistService.createProduto(novoProduto).subscribe(result => {
-            this.router.navigate(['/gerirprodutos']);
-          },
+          this.autenticacaoService.getUser(this.userName).subscribe(dono => {
+              const uploadProduto: FormData = new FormData();
+              uploadProduto.append('nome', this.formGroup.controls.nome.value);
+              uploadProduto.append('descricao', this.formGroup.controls.descricao.value);
+              uploadProduto.append('preco', this.formGroup.controls.preco.value);
+              uploadProduto.append('institutos', institutosselecionados.substring(0, institutosselecionados.length - 1));
+              uploadProduto.append('foto', this.foto, this.foto.name);
+              uploadProduto.append('quantidade', this.formGroup.controls.quantidade.value);
+              uploadProduto.append('categoria', String(categoriaselecionada.id));
+              uploadProduto.append('dono', String(dono.id));
+
+              this.produtoslistService.createProduto(uploadProduto).subscribe(result => {
+                  this.router.navigate(['/gerirprodutos']);
+                },
+                error => {
+                  if (error.status === 401) {
+                    this.autenticacaoService.renovateSession().subscribe(
+                      token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                      erro => this.router.navigateByUrl('/login'));
+                  }
+                });
+            },
             error => {
               if (error.status === 401) {
                 this.autenticacaoService.renovateSession().subscribe(
@@ -122,14 +143,6 @@ export class InserirprodutoComponent implements OnInit {
               }
             });
         },
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
-            }
-          });
-      },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

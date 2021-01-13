@@ -28,6 +28,7 @@ export class EditarprodutoComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
 
   constructor(private route: ActivatedRoute, private router: Router, private categoriasService: CategoriasService, private autenticacaoService: AutenticacaoService, private produtoslistService: ProdutoslistService, private institutoslistService: InstitutoslistService) {
     this.error = false;
@@ -43,7 +44,7 @@ export class EditarprodutoComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -56,12 +57,12 @@ export class EditarprodutoComponent implements OnInit {
     }
     this.produtoID = parseInt(this.route.snapshot.paramMap.get('id'));
     this.produtoslistService.getProdutoById(this.produtoID).subscribe(result => {this.produto = result;
-      //@ts-ignore
-      this.selectedCategoria = this.produto.categoria;
-      //@ts-ignore
-      this.selectedInstitutos = this.produto.instituto;
-      this.initForm();
-    },
+        //@ts-ignore
+        this.selectedCategoria = this.produto.categoria;
+        //@ts-ignore
+        this.selectedInstitutos = this.produto.instituto;
+        this.initForm();
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -82,13 +83,13 @@ export class EditarprodutoComponent implements OnInit {
       });
     this.institutos = [];
     this.institutoslistService.getListaInstitutos('','').subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId) {
-          this.institutos.push(element);
-        }
-      });
-    },
+        lista.forEach((element) => {
+          //@ts-ignore
+          if (element.dono === this.userId) {
+            this.institutos.push(element);
+          }
+        });
+      },
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -103,22 +104,33 @@ export class EditarprodutoComponent implements OnInit {
       quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
       categoria: new FormControl('', [Validators.required]),
       instituto: new FormControl('', [Validators.required]),
-      foto: new FormControl(this.produto.foto, [Validators.required]),
+      //foto: new FormControl(this.produto.foto, [Validators.required]),
     });
     this.formReady = true;
+  }
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
   }
 
   editarProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      this.produto.nome = this.formGroup.controls.nome.value;
-      this.produto.descricao = this.formGroup.controls.descricao.value;
-      this.produto.preco = this.formGroup.controls.preco.value;
-      this.produto.quantidade = this.formGroup.controls.quantidade.value;
-      this.produto.categoria = this.formGroup.controls.categoria.value;
-      this.produto.instituto =  this.formGroup.controls.instituto.value;
-      this.produto.foto =  this.formGroup.controls.foto.value;
-      this.produtoslistService.updateProduto(this.produto).subscribe(result => {this.router.navigate(['/gerirprodutos']);},
+      let institutos: string = '';
+      this.selectedInstitutos.forEach((elemento) => {
+        institutos = institutos + elemento + '-';
+      });
+      institutos = institutos.substring(0, institutos.length - 1);
+      const uploadProduto: FormData = new FormData();
+      uploadProduto.append('id', String(this.produto.id));
+      uploadProduto.append('nome', this.formGroup.controls.nome.value);
+      uploadProduto.append('descricao', this.formGroup.controls.descricao.value);
+      uploadProduto.append('preco', this.formGroup.controls.preco.value);
+      uploadProduto.append('quantidade', this.formGroup.controls.quantidade.value);
+      uploadProduto.append('institutos', institutos);
+      uploadProduto.append('foto', this.foto, this.foto.name);
+      uploadProduto.append('categoria', String(this.formGroup.controls.categoria.value));
+      this.produtoslistService.updateProduto(uploadProduto).subscribe(result => {this.router.navigate(['/gerirprodutos']);},
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

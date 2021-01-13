@@ -36,14 +36,14 @@ export class ProdutoslistService {
   }
 
 
-  createProduto(produto: Produto): Observable<any> {
+  createProduto(produto: any): Observable<any> {
     let url = this.baseUrl + 'createProduto';
-    return this.http.post(url, produto, httpOptions);
+    return this.http.post(url, produto);
   }
 
-  updateProduto(produto: Produto): Observable<any> {
+  updateProduto(produto: any): Observable<any> {
     let url = this.baseUrl + 'updateProduto';
-    return this.http.put(url, produto, httpOptions);
+    return this.http.put(url, produto);
   }
 
   dropProduto(id: number) {

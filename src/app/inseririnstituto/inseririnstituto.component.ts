@@ -19,6 +19,7 @@ export class InseririnstitutoComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
 
   constructor(private router: Router, private autenticacaoService: AutenticacaoService, private institutoslistService: InstitutoslistService) {
     this.error = false;
@@ -34,7 +35,7 @@ export class InseririnstitutoComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(
@@ -55,28 +56,38 @@ export class InseririnstitutoComponent implements OnInit {
       localizacao: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       website: new FormControl('', [Validators.required]),
-      foto: new FormControl('', [Validators.required]),
+      //foto: new FormControl('', [Validators.required]),
     });
     this.formReady = true;
+  }
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
   }
 
   inserirProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      const fotopath = this.formGroup.controls.foto.value.substring(12, this.formGroup.controls.foto.value.length);
       this.autenticacaoService.getUser(this.userName).subscribe(dono => {
-        const novoInstituto = new Instituto(this.formGroup.controls.nome.value, this.formGroup.controls.slogan.value, this.formGroup.controls.localizacao.value, this.formGroup.controls.email.value, this.formGroup.controls.website.value, fotopath, dono);
-        this.institutoslistService.createInstituto(novoInstituto).subscribe(
-          result => {this.router.navigate(['/geririnstitutos']);},
-          error => {
-            if (error.status === 401) {
-              this.autenticacaoService.renovateSession().subscribe(
-                token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-                erro => this.router.navigateByUrl('/login'));
+          const uploadInstituto: FormData = new FormData();
+          uploadInstituto.append('nome', this.formGroup.controls.nome.value);
+          uploadInstituto.append('slogan', this.formGroup.controls.slogan.value);
+          uploadInstituto.append('localizacao', this.formGroup.controls.localizacao.value);
+          uploadInstituto.append('email', this.formGroup.controls.email.value);
+          uploadInstituto.append('website', this.formGroup.controls.website.value);
+          uploadInstituto.append('foto', this.foto, this.foto.name);
+          uploadInstituto.append('dono', String(dono.id));
+          this.institutoslistService.createInstituto(uploadInstituto).subscribe(
+            result => {this.router.navigate(['/geririnstitutos']);},
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
             }
-          }
           );
-      },
+        },
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

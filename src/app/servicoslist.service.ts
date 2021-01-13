@@ -36,14 +36,14 @@ export class ServicoslistService {
     return this.http.get<Instituto[]>(url)
   }
 
-  createServico(servico: Servico): Observable<any> {
+  createServico(servico: any): Observable<any> {
     let url = this.baseUrl + 'createServico';
-    return this.http.post(url, servico, httpOptions);
+    return this.http.post(url, servico);
   }
 
-  updateServico(servico: Servico): Observable<any> {
+  updateServico(servico: any): Observable<any> {
     let url = this.baseUrl + 'updateServico';
-    return this.http.put(url, servico, httpOptions);
+    return this.http.put(url, servico);
   }
 
   dropServico(id: number) {

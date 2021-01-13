@@ -10,6 +10,7 @@ import {ServicoslistService} from '../servicoslist.service';
 import {ProdutoslistService} from '../produtoslist.service';
 import {StafflistService} from '../stafflist.service';
 import {MembroStaff} from '../MembroStaff';
+import {CategoriasService} from '../categorias.service';
 
 @Component({
   selector: 'app-editarinstituto',
@@ -32,8 +33,9 @@ export class EditarinstitutoComponent implements OnInit {
 
   formReady: boolean;
   formGroup: FormGroup;
+  foto: File;
 
-  constructor(private route: ActivatedRoute, private router: Router, private autenticacaoService: AutenticacaoService, private institutoslistService: InstitutoslistService, private servicoslistService: ServicoslistService, private produtoslistService: ProdutoslistService, private staffService: StafflistService) {
+  constructor(private route: ActivatedRoute, private router: Router,private categoriasService: CategoriasService, private autenticacaoService: AutenticacaoService, private institutoslistService: InstitutoslistService, private servicoslistService: ServicoslistService, private produtoslistService: ProdutoslistService, private staffService: StafflistService) {
     this.error = false;
     this.formReady = false;
   }
@@ -67,7 +69,18 @@ export class EditarinstitutoComponent implements OnInit {
     this.institutoslistService.getInstitutoById(this.institutoID).subscribe(result => {
         this.instituto = result;
         let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
-        this.servicoslistService.getListaServicos(url).subscribe(result1 => this.servicolist = result1.results,
+        this.servicoslistService.getListaServicos(url).subscribe(result1 => {this.servicolist = result1.results;
+            this.servicolist.forEach( (element) => {
+              // @ts-ignore
+              this.categoriasService.getCategoriaServicoById(element.categoria).subscribe(categoria => {element.categoria = categoria;},
+                error => {
+                  if (error.status === 401) {
+                    this.autenticacaoService.renovateSession().subscribe(
+                      token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                      erro => this.router.navigateByUrl('/login'));
+                  }
+                });
+            }); },
           error => {
             if (error.status === 401) {
               this.autenticacaoService.renovateSession().subscribe(
@@ -75,7 +88,18 @@ export class EditarinstitutoComponent implements OnInit {
                 erro => this.router.navigateByUrl('/login'));
             }
           });
-        this.produtoslistService.getListaProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID).subscribe(result2 => this.produtolist = result2.results,
+        this.produtoslistService.getListaProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID).subscribe(result2 => {this.produtolist = result2.results;
+            this.produtolist.forEach( (element) => {
+              // @ts-ignore
+              this.categoriasService.getCategoriaProdutoById(element.categoria).subscribe(categoria => { element.categoria = categoria;},
+                error => {
+                  if (error.status === 401) {
+                    this.autenticacaoService.renovateSession().subscribe(
+                      token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                      erro => this.router.navigateByUrl('/login'));
+                  }
+                });
+            });},
           error => {
             if (error.status === 401) {
               this.autenticacaoService.renovateSession().subscribe(
@@ -115,28 +139,33 @@ export class EditarinstitutoComponent implements OnInit {
   }
 
   initForm() {
-    console.log(this.instituto)
     this.formGroup = new FormGroup({
       nome: new FormControl(this.instituto.nome, [Validators.required]),
       slogan: new FormControl(this.instituto.slogan, [Validators.required]),
       localizacao: new FormControl(this.instituto.localizacao, [Validators.required]),
       email: new FormControl(this.instituto.email, [Validators.required]),
       website: new FormControl(this.instituto.website, [Validators.required]),
-      foto: new FormControl(this.instituto.foto, [Validators.required]),
+      //foto: new FormControl(this.instituto.foto, [Validators.required]),
     });
     this.formReady = true;
+  }
+
+  onSelectedFile(event) {
+    this.foto = event.target.files[0];
   }
 
   editarProcess() {
     this.error = false;
     if (this.formGroup.valid) {
-      this.instituto.nome = this.formGroup.controls.nome.value;
-      this.instituto.slogan = this.formGroup.controls.slogan.value;
-      this.instituto.localizacao = this.formGroup.controls.localizacao.value;
-      this.instituto.email = this.formGroup.controls.email.value;
-      this.instituto.website = this.formGroup.controls.website.value;
-      this.instituto.foto =  this.formGroup.controls.foto.value;
-      this.institutoslistService.updateInstituto(this.instituto).subscribe(result => {  this.router.navigate(['/geririnstitutos']);},
+      const uploadInstituto: FormData = new FormData();
+      uploadInstituto.append('id', String(this.instituto.id));
+      uploadInstituto.append('nome', this.formGroup.controls.nome.value);
+      uploadInstituto.append('slogan', this.formGroup.controls.slogan.value);
+      uploadInstituto.append('localizacao', this.formGroup.controls.localizacao.value);
+      uploadInstituto.append('email', this.formGroup.controls.email.value);
+      uploadInstituto.append('website', this.formGroup.controls.website.value);
+      uploadInstituto.append('foto', this.foto, this.foto.name);
+      this.institutoslistService.updateInstituto(uploadInstituto).subscribe(result => {  this.router.navigate(['/geririnstitutos']);},
         error => {
           if (error.status === 401) {
             this.autenticacaoService.renovateSession().subscribe(

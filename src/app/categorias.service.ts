@@ -38,14 +38,14 @@ export class CategoriasService {
     return this.http.get<Servico[]>(url)
   }
 
-  createCategoriaServico(categoria: CategoriaServico): Observable<any> {
+  createCategoriaServico(categoria: any): Observable<any> {
     let url = this.baseUrl + 'createCategoriaServico';
-    return this.http.post(url, categoria, httpOptions);
+    return this.http.post(url, categoria);
   }
 
-  createCategoriaProduto(categoria: CategoriaProduto): Observable<any> {
+  createCategoriaProduto(categoria: any): Observable<any> {
     let url = this.baseUrl + 'createCategoriaProduto';
-    return this.http.post(url, categoria, httpOptions);
+    return this.http.post(url, categoria);
   }
 
   dropCategoriaServico(categoria: CategoriaServico): Observable<any> {
