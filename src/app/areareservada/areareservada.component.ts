@@ -128,7 +128,7 @@ export class AreareservadaComponent implements OnInit {
     if (this.formGroup2.valid && this.foto2 !== undefined) {
       const uploadCategoria: FormData = new FormData();
       uploadCategoria.append('nome', this.formGroup2.controls.nome.value);
-      uploadCategoria.append('foto', this.foto2, this.foto1.name);
+      uploadCategoria.append('foto', this.foto2, this.foto2.name);
       this.categoriasService.createCategoriaProduto(uploadCategoria).subscribe(result => {this.ngOnInit();},
         error => {
           if (error.status === 401) {
