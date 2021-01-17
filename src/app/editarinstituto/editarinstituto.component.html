@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light " style="background: whitesmoke">
-  <a routerLink="/home"><img style="height: 80px; width: 133px; margin-right: 20px" src="http://rafaelfbaptista.pythonanywhere.com/static/images/logo2.png"></a>
+  <a routerLink="/home"><img style="height: 80px; width: 133px; margin-right: 20px" src="https://rafaelfbaptista.pythonanywhere.com/static/images/logo2.png"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -43,7 +43,7 @@
     <ng-template #thenBlock2>
       <ul class="nav navbar-nav navbar-right" >
         <li style="text-align: right;"><a routerLink="/account">
-          <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/user.png" style="width: 5%">
+          <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/user.png" style="width: 5%">
           <span class="glyphicon glyphicon-log-in">&nbsp;</span>
           {{ userName }}
           <span class="glyphicon glyphicon-log-in">&nbsp; &nbsp;</span>
@@ -136,7 +136,7 @@
       <hr>
       <div class="row" style="height: 440px">
         <div class="zoom conteudo col-sm-7">
-          <img src="http://rafaelfbaptista.pythonanywhere.com{{ instituto.foto }}" style="max-width: 600px; height: 400px" >
+          <img src="https://rafaelfbaptista.pythonanywhere.com{{ instituto.foto }}" style="max-width: 600px; height: 400px" >
         </div>
         <div class="col-sm-5" style="text-align:left;">
           <br><br>
@@ -177,15 +177,15 @@
   <ul style="width: 80%; margin: auto" class="list-group list-group-flush">
     <li *ngFor="let servico of servicolist" class="list-group-item" style="margin-bottom: 20px">
       <div class="row">
-        <img style="height: 30px; margin-left: 40px; margin-right: 50px" src="http://rafaelfbaptista.pythonanywhere.com{{ servico.categoria.foto }}">
+        <img style="height: 30px; margin-left: 40px; margin-right: 50px" src="https://rafaelfbaptista.pythonanywhere.com{{ servico.categoria.foto }}">
         <div class="col-md-3 col-xs-6 divTableCell">
           <a style="font-size: 16px" href="/servico/{{ servico.id }}/">{{ servico.nome }}</a>
         </div>
         <div class="col-md-3 col-xs-6 divTableCell">
           {{ servico.preco }}€
         </div>
-        <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; right: 70px;" [routerLink]= "['/editarservico', servico.id]">
-        <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; margin-left: 30px; position: absolute; right: 30px;" (click)="removerServico(servico)">
+        <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; right: 70px;" [routerLink]= "['/editarservico', servico.id]">
+        <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; margin-left: 30px; position: absolute; right: 30px;" (click)="removerServico(servico)">
       </div>
     </li>
   </ul>
@@ -194,15 +194,15 @@
   <ul style="width: 80%; margin: auto" class="list-group list-group-flush">
     <li *ngFor="let produto of produtolist"  class="list-group-item" style="margin-bottom: 20px">
       <div class="row">
-        <img style="height: 30px; margin-left: 40px; margin-right: 50px" src="http://rafaelfbaptista.pythonanywhere.com{{ produto.categoria.foto }}">
+        <img style="height: 30px; margin-left: 40px; margin-right: 50px" src="https://rafaelfbaptista.pythonanywhere.com{{ produto.categoria.foto }}">
         <div class="col-md-3 col-xs-6 divTableCell">
           <a style="font-size: 16px" href="/produto/{{ produto.id }}/">{{ produto.nome }}</a>
         </div>
         <div class="col-md-3 col-xs-6 divTableCell">
           {{ produto.preco }}€
         </div>
-        <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; right: 70px;" [routerLink]= "['/editarproduto', produto.id]">
-        <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; margin-left: 30px; position: absolute; right: 30px; " (click)="removerProduto(produto)">
+        <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; right: 70px;" [routerLink]= "['/editarproduto', produto.id]">
+        <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; margin-left: 30px; position: absolute; right: 30px; " (click)="removerProduto(produto)">
       </div>
     </li>
   </ul>
@@ -213,17 +213,17 @@
   <ng-template #thenBlock4>
     <div *ngFor="let item of staffDict | keyvalue" class="card-zoom card-deck" style="width: 372.59px; display: inline-block; margin: 30px 20px">
       <div class="card">
-        <img class="card-img-top" src="http://rafaelfbaptista.pythonanywhere.com{{ staffDict[item.key].foto }}" alt="Card image cap" style="width: 340.59px; height: 320.59px;">
+        <img class="card-img-top" src="https://rafaelfbaptista.pythonanywhere.com{{ staffDict[item.key].foto }}" alt="Card image cap" style="width: 340.59px; height: 320.59px;">
         <div class="card-body" style="width: 340.59px;">
           <h5 class="card-title" style="width: 300.59px; height: 30.59px;">{{ staffDict[item.key].nome }}</h5>
         </div>
         <div class="card-footer" style="width: 340.59px;">
           <small class="text-muted" style="width: 280.59px; height: 50.59px;">
-            <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; left: 60px;" [routerLink]= "['/editarstaff', staffDict[item.key].id]">
+            <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/editicon.png" style="width: 25px; position: absolute; left: 60px;" [routerLink]= "['/editarstaff', staffDict[item.key].id]">
             <small *ngFor="let item2 of trabalhosDict[item.key] | keyvalue" class="text-muted" style="width: 280.59px; height: 50.59px;" >
               {{ trabalhosDict[item.key][item2.key].posicao }} <br>
             </small>
-            <img src="http://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; position: absolute; right: 60px; top: 416px" (click)="removerStaff(staffDict[item.key])">
+            <img src="https://rafaelfbaptista.pythonanywhere.com/static/images/deleteicon.png" style="width: 25px; position: absolute; right: 60px; top: 416px" (click)="removerStaff(staffDict[item.key])">
           </small>
         </div>
       </div>

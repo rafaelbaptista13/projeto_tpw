@@ -68,7 +68,7 @@ export class EditarinstitutoComponent implements OnInit {
     this.institutoID = parseInt(this.route.snapshot.paramMap.get('id'));
     this.institutoslistService.getInstitutoById(this.institutoID).subscribe(result => {
         this.instituto = result;
-        let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
+        let url = 'https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
         this.servicoslistService.getListaServicos(url).subscribe(result1 => {this.servicolist = result1.results;
             this.servicolist.forEach( (element) => {
               // @ts-ignore
@@ -88,7 +88,7 @@ export class EditarinstitutoComponent implements OnInit {
                 erro => this.router.navigateByUrl('/login'));
             }
           });
-        this.produtoslistService.getListaProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID).subscribe(result2 => {this.produtolist = result2.results;
+        this.produtoslistService.getListaProdutos('https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID).subscribe(result2 => {this.produtolist = result2.results;
             this.produtolist.forEach( (element) => {
               // @ts-ignore
               this.categoriasService.getCategoriaProdutoById(element.categoria).subscribe(categoria => { element.categoria = categoria;},
