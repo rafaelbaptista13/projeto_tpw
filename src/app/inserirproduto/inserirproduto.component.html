@@ -155,7 +155,7 @@
       <span>&nbsp; &nbsp;</span>
       <div class="form-group mb-2" style="display: grid;grid-template-columns: 1fr 4fr;">
         <label>Foto: </label>
-        <input formControlName="foto" type="file">
+        <input (change)="onSelectedFile($event)" type="file">
       </div>
       <span>&nbsp; &nbsp;</span>
       <button class="btn btn-outline-success" style="width: 200px; margin-top: 40px" type="submit">Inserir</button>
