@@ -57,7 +57,7 @@ export class ServicoslistComponent implements OnInit {
     }
     this.initForm();
     this.institutolistService.getListaInstitutos('','' ).subscribe(lista => { this.institutos = lista;
-        this.categoriasService.getListaCategoriasServicos().subscribe(lista1 => {this.categorias = lista1; this.getServicos('http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+        this.categoriasService.getListaCategoriasServicos().subscribe(lista1 => {this.categorias = lista1; this.getServicos('https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
           },
           error => {
             if (error.status === 401) {
@@ -115,7 +115,7 @@ export class ServicoslistComponent implements OnInit {
     if (instituto === '') {
       instituto = -1;
     }
-    let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?';
+    let url = 'https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?';
 
     url += '&instituto=' + instituto;
 

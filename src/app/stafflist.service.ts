@@ -14,7 +14,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class StafflistService {
-  private baseUrl = 'http://rafaelfbaptista.pythonanywhere.com/rest/';
+  private baseUrl = 'https://rafaelfbaptista.pythonanywhere.com/rest/';
 
   constructor(private http: HttpClient) {}
 

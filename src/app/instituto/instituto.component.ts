@@ -39,7 +39,7 @@ export class InstitutoComponent implements OnInit {
             erro => this.router.navigateByUrl('/login'));
         }
       });
-    let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
+    let url = 'https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
     this.servicoslistService.getListaServicos(url).subscribe(lista => { this.servicosList = lista.results;
         this.servicosList.forEach( (element) => {
           // @ts-ignore
@@ -59,7 +59,7 @@ export class InstitutoComponent implements OnInit {
             erro => this.router.navigateByUrl('/login'));
         }
       });
-    url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
+    url = 'https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=' + this.institutoID;
     this.produtoslistService.getListaProdutos(url).subscribe(lista => {this.produtosList = lista.results;
         this.produtosList.forEach( (element) => {
           // @ts-ignore

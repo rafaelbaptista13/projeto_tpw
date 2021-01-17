@@ -45,7 +45,7 @@ export class GestaoservicosComponent implements OnInit {
     }
     this.servicosList = [];
 
-    this.getServicos('http://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+    this.getServicos('https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
   }
 
 

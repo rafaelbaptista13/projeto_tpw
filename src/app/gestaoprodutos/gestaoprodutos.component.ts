@@ -46,7 +46,7 @@ export class GestaoprodutosComponent implements OnInit {
       this.router.navigate(['/home']);
     }
     this.produtosList = [];
-    this.getProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+    this.getProdutos('https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
 
   }
 

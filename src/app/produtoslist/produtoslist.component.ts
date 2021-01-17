@@ -64,7 +64,7 @@ export class ProdutoslistComponent implements OnInit {
             erro => this.router.navigateByUrl('/login'));
         }
       });
-    this.categoriasService.getListaCategoriasProdutos().subscribe(lista => {this.categorias = lista;  this.getProdutos('http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1')},
+    this.categoriasService.getListaCategoriasProdutos().subscribe(lista => {this.categorias = lista;  this.getProdutos('https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page_size=8&page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1')},
       error => {
         if (error.status === 401) {
           this.autenticacaoService.renovateSession().subscribe(
@@ -124,7 +124,7 @@ export class ProdutoslistComponent implements OnInit {
     if (instituto === '') {
       instituto = -1;
     }
-    let url = 'http://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?';
+    let url = 'https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?';
 
     url += '&instituto=' + instituto;
 
