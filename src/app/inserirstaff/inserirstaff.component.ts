@@ -93,7 +93,9 @@ export class InserirstaffComponent implements OnInit {
 
   inserirProcess() {
     this.error = false;
+    console.log('entrei inserir process');
     if (this.formGroup.valid && this.foto !== undefined) {
+      console.log('passei 1 if');
       this.autenticacaoService.getUser(this.userName).subscribe(dono => {
           let trabalhos : string = '';
           this.formGroup.controls.trabalhos.value.forEach((elemento) => {
