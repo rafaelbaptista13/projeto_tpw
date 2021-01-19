@@ -98,12 +98,11 @@ export class EditarservicoComponent implements OnInit {
         }
       });
     this.formGroup = new FormGroup({
-      nome: new FormControl(this.servico.nome, [Validators.required]),
-      descricao: new FormControl(this.servico.descricao, [Validators.required]),
-      preco: new FormControl(this.servico.preco, [Validators.required]),
-      categoria: new FormControl('', [Validators.required]),
-      instituto: new FormControl('', [Validators.required]),
-      //foto: new FormControl(this.servico.foto, [Validators.required]),
+      nome: new FormControl(this.servico.nome),
+      descricao: new FormControl(this.servico.descricao),
+      preco: new FormControl(this.servico.preco),
+      categoria: new FormControl(''),
+      instituto: new FormControl(''),
     });
     this.formReady = true;
   }
@@ -127,7 +126,11 @@ export class EditarservicoComponent implements OnInit {
       uploadServico.append('descricao', this.formGroup.controls.descricao.value);
       uploadServico.append('preco', this.formGroup.controls.preco.value);
       uploadServico.append('institutos', institutos);
-      uploadServico.append('foto', this.foto, this.foto.name);
+      if (this.foto !== undefined) {
+        uploadServico.append('foto', this.foto, this.foto.name);
+      } else {
+        uploadServico.append('foto', '');
+      }
       uploadServico.append('categoria', String(this.formGroup.controls.categoria.value));
       this.servicoslistService.updateServico(uploadServico).subscribe(result => {this.router.navigate(['/gerirservicos']);},
         error => {

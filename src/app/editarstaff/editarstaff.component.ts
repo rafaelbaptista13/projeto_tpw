@@ -95,8 +95,8 @@ export class EditarstaffComponent implements OnInit {
         }
       });
     this.formGroup = new FormGroup({
-      nome: new FormControl(this.membrostaff.nome, [Validators.required]),
-      trabalho: new FormControl('', [Validators.required]),
+      nome: new FormControl(this.membrostaff.nome),
+      trabalho: new FormControl(''),
     });
     this.formReady = true;
   }
@@ -116,7 +116,11 @@ export class EditarstaffComponent implements OnInit {
       const uploadMembro: FormData = new FormData();
       uploadMembro.append('id', String(this.membrostaff.id));
       uploadMembro.append('nome', this.formGroup.controls.nome.value);
-      uploadMembro.append('foto', this.foto, this.foto.name);
+      if (this.foto !== undefined) {
+        uploadMembro.append('foto', this.foto, this.foto.name);
+      } else {
+        uploadMembro.append('foto', '');
+      }
       uploadMembro.append('trabalhos', trabalhos);
 
       this.stafflistService.updateStaff(uploadMembro).subscribe(result => {this.router.navigate(['/gerirstaff']);},

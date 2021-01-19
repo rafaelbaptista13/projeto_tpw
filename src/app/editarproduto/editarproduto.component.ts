@@ -98,13 +98,12 @@ export class EditarprodutoComponent implements OnInit {
         }
       });
     this.formGroup = new FormGroup({
-      nome: new FormControl(this.produto.nome, [Validators.required]),
-      descricao: new FormControl(this.produto.descricao, [Validators.required]),
-      preco: new FormControl(this.produto.preco, [Validators.required]),
-      quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
-      categoria: new FormControl('', [Validators.required]),
-      instituto: new FormControl('', [Validators.required]),
-      //foto: new FormControl(this.produto.foto, [Validators.required]),
+      nome: new FormControl(this.produto.nome),
+      descricao: new FormControl(this.produto.descricao),
+      preco: new FormControl(this.produto.preco),
+      quantidade: new FormControl(this.produto.quantidade),
+      categoria: new FormControl(''),
+      instituto: new FormControl(''),
     });
     this.formReady = true;
   }
@@ -128,7 +127,11 @@ export class EditarprodutoComponent implements OnInit {
       uploadProduto.append('preco', this.formGroup.controls.preco.value);
       uploadProduto.append('quantidade', this.formGroup.controls.quantidade.value);
       uploadProduto.append('institutos', institutos);
-      uploadProduto.append('foto', this.foto, this.foto.name);
+      if (this.foto !== undefined) {
+        uploadProduto.append('foto', this.foto, this.foto.name);
+      } else {
+        uploadProduto.append('foto', '');
+      }
       uploadProduto.append('categoria', String(this.formGroup.controls.categoria.value));
       this.produtoslistService.updateProduto(uploadProduto).subscribe(result => {this.router.navigate(['/gerirprodutos']);},
         error => {

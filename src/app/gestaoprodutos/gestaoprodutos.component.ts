@@ -57,7 +57,7 @@ export class GestaoprodutosComponent implements OnInit {
     this.produtoslistService.getListaProdutos(url).subscribe(response2 => {
         response2.results.forEach((element) => {
           //@ts-ignore
-          if (element.dono === this.userId) {
+          if (element.dono === this.userId || this.userName === 'projeto') {
             this.produtosList.push(element);
           }
         });

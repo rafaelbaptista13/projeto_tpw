@@ -46,7 +46,7 @@ export class GestaoinstitutosComponent implements OnInit {
     this.institutoslistService.getListaInstitutos('','' ).subscribe(lista => {
       lista.forEach((element) => {
         //@ts-ignore
-        if (element.dono === this.userId) {
+        if (element.dono === this.userId || this.userName === 'projeto') {
           this.institutosList.push(element);
         }
       });

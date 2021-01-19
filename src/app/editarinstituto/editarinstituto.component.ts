@@ -140,12 +140,11 @@ export class EditarinstitutoComponent implements OnInit {
 
   initForm() {
     this.formGroup = new FormGroup({
-      nome: new FormControl(this.instituto.nome, [Validators.required]),
-      slogan: new FormControl(this.instituto.slogan, [Validators.required]),
-      localizacao: new FormControl(this.instituto.localizacao, [Validators.required]),
-      email: new FormControl(this.instituto.email, [Validators.required]),
-      website: new FormControl(this.instituto.website, [Validators.required]),
-      //foto: new FormControl(this.instituto.foto, [Validators.required]),
+      nome: new FormControl(this.instituto.nome),
+      slogan: new FormControl(this.instituto.slogan),
+      localizacao: new FormControl(this.instituto.localizacao),
+      email: new FormControl(this.instituto.email),
+      website: new FormControl(this.instituto.website),
     });
     this.formReady = true;
   }
@@ -164,7 +163,11 @@ export class EditarinstitutoComponent implements OnInit {
       uploadInstituto.append('localizacao', this.formGroup.controls.localizacao.value);
       uploadInstituto.append('email', this.formGroup.controls.email.value);
       uploadInstituto.append('website', this.formGroup.controls.website.value);
-      uploadInstituto.append('foto', this.foto, this.foto.name);
+      if (this.foto !== undefined) {
+        uploadInstituto.append('foto', this.foto, this.foto.name);
+      } else {
+        uploadInstituto.append('foto', '');
+      }
       this.institutoslistService.updateInstituto(uploadInstituto).subscribe(result => {  this.router.navigate(['/geririnstitutos']);},
         error => {
           if (error.status === 401) {
