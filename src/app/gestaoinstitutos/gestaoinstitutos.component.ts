@@ -16,6 +16,7 @@ export class GestaoinstitutosComponent implements OnInit {
   userName: string;
   userLogado: boolean;
   institutosList: Instituto[] = [];
+  renderizar: boolean = false;
 
   constructor(private router: Router, private institutoslistService: InstitutoslistService, private autenticacaoService: AutenticacaoService) {
     this.error = false;
@@ -23,6 +24,7 @@ export class GestaoinstitutosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.renderizar = false;
     if (localStorage.getItem('currentUserUsername') != null) {
       this.userLogado = true;
     } else {
@@ -31,6 +33,23 @@ export class GestaoinstitutosComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
+          this.institutosList = [];
+          this.institutoslistService.getListaInstitutos('','' ).subscribe(lista => {
+              lista.forEach((element) => {
+                //@ts-ignore
+                if (element.dono === this.userId || this.userName === 'projeto') {
+                  this.institutosList.push(element);
+                }
+              });
+              this.renderizar = true;
+            },
+            error => {
+              if (error.status === 401) {
+                this.autenticacaoService.renovateSession().subscribe(
+                  token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
+                  erro => this.router.navigateByUrl('/login'));
+              }
+            });
       },
         error => {
           if (error.status === 401) {
@@ -42,22 +61,7 @@ export class GestaoinstitutosComponent implements OnInit {
     } else {
       this.router.navigate(['/home']);
     }
-    this.institutosList = [];
-    this.institutoslistService.getListaInstitutos('','' ).subscribe(lista => {
-      lista.forEach((element) => {
-        //@ts-ignore
-        if (element.dono === this.userId || this.userName === 'projeto') {
-          this.institutosList.push(element);
-        }
-      });
-    },
-      error => {
-        if (error.status === 401) {
-          this.autenticacaoService.renovateSession().subscribe(
-            token => {localStorage.setItem('currentUserTokenAccess', token.access); this.ngOnInit()} ,
-            erro => this.router.navigateByUrl('/login'));
-        }
-      });
+
   }
 
 

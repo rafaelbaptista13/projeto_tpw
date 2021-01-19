@@ -18,6 +18,7 @@ export class GestaoprodutosComponent implements OnInit {
   userName: string;
   userLogado: boolean;
   produtosList: Produto[] = [];
+  renderizar: boolean = false;
 
   constructor(private router: Router, private produtoslistService: ProdutoslistService, private autenticacaoService: AutenticacaoService) {
     this.error = false;
@@ -26,6 +27,7 @@ export class GestaoprodutosComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.renderizar = false;
     if (localStorage.getItem('currentUserUsername') != null) {
       this.userLogado = true;
     } else {
@@ -34,6 +36,8 @@ export class GestaoprodutosComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
+      this.produtosList = [];
+      this.getProdutos('https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
         },
         error => {
           if (error.status === 401) {
@@ -45,8 +49,6 @@ export class GestaoprodutosComponent implements OnInit {
     } else {
       this.router.navigate(['/home']);
     }
-    this.produtosList = [];
-    this.getProdutos('https://rafaelfbaptista.pythonanywhere.com/rest/listaProdutos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
 
   }
 
@@ -61,7 +63,7 @@ export class GestaoprodutosComponent implements OnInit {
             this.produtosList.push(element);
           }
         });
-
+        this.renderizar = true;
       },
       error => {
         if (error.status === 401) {

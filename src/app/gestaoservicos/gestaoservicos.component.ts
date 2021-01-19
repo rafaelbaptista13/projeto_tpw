@@ -16,7 +16,7 @@ export class GestaoservicosComponent implements OnInit {
   userName: string;
   userLogado: boolean;
   servicosList: Servico[] = [];
-
+  renderizar: boolean = false;
 
   constructor(private router: Router, private servicoslistService: ServicoslistService, private autenticacaoService: AutenticacaoService) {
     this.error = false;
@@ -24,6 +24,7 @@ export class GestaoservicosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.renderizar = false;
     if (localStorage.getItem('currentUserUsername') != null) {
       this.userLogado = true;
     } else {
@@ -32,6 +33,9 @@ export class GestaoservicosComponent implements OnInit {
     if (this.userLogado) {
       this.userName = localStorage.getItem('currentUserUsername');
       this.autenticacaoService.getUser(this.userName).subscribe(result => {this.userId = result.id;
+      this.servicosList = [];
+      this.getServicos('https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
+
         },
         error => {
           if (error.status === 401) {
@@ -43,10 +47,7 @@ export class GestaoservicosComponent implements OnInit {
     } else {
       this.router.navigate(['/home']);
     }
-    this.servicosList = [];
-
-    this.getServicos('https://rafaelfbaptista.pythonanywhere.com/rest/listaServicos?page=1&nome=&maxprice=&minprice=&categoria=-1&instituto=-1');
-  }
+    }
 
 
   remover(servico: Servico): void {
@@ -70,8 +71,7 @@ export class GestaoservicosComponent implements OnInit {
             this.servicosList.push(element);
           }
         });
-
-
+        this.renderizar = true;
       },
       error => {
         if (error.status === 401) {
